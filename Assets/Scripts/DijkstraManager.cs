@@ -46,13 +46,20 @@ public class DijkstraManager : MonoBehaviour
             for (int j = 0; j < _columns; j++)
             {
                 _distances[i, j] = int.MaxValue; // Instead of Infinity, we give integer's max value
-                _isVisited[i, j] = false; // No node is visited before execution
+                _isVisited[i, j] = false; // All nodes are temporary before execution
             }
         }
         
         // Distance from source itself is 0
         _distances[_sourcePosition.x, _sourcePosition.y] = 0;
-
+        
+        // Priority queue to store nodes (cubes)'s coordinates based on their distances
+        PriorityQueue<(int, int)> priorityQueue = new PriorityQueue<(int, int)>((a, b) =>
+            _distances[a.Item1, a.Item2].CompareTo(_distances[b.Item1, b.Item2]));
+        
+        priorityQueue.Enqueue((_sourcePosition.x, _sourcePosition.y));
+        
+        // TODO: something that returns cube based on its coordinate
     }
     
     // ====================================================================================
