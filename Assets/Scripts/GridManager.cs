@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -7,30 +8,60 @@ using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour
 {
+    // ====================================================================================
+    // Class attributes
+    // ====================================================================================
+    
     private GameObject[,] _grid;
 
-    [Header("Grid settings")] [SerializeField]
-    private int gridSizeX = 64;
-
+    [Header("Grid settings")]
+    [SerializeField] private int gridSizeX = 64;
     [SerializeField] private int gridSizeY = 64;
 
-    [Header("Positions")] [SerializeField] private Vector2Int[] obstaclesPosition;
+    [Header("Positions")] 
+    [SerializeField] private Vector2Int[] obstaclesPosition;
     [SerializeField] private Vector2Int sourcePosition;
     [SerializeField] private Vector2Int destinationPosition;
 
-    [Header("Prefabs")] [SerializeField] private GameObject gridParent;
+    [Header("Prefabs")] 
+    [SerializeField] private GameObject gridParent;
     [SerializeField] private GameObject walkablePrefab;
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject sourcePrefab;
     [SerializeField] private GameObject destinationPrefab;
 
-    [Header("Scripts")] [SerializeField] private InputManager inputManager;
-
-
-    // Start is called before the first frame update
-    void Start()
+    // Static reference to the instance (singleton pattern)
+    private static GridManager _instance; 
+    
+    // ====================================================================================
+    
+    
+    // ====================================================================================
+    // Class methods
+    // ====================================================================================
+    
+    // Public property to access the instance
+    public static GridManager GetInstance()
     {
-        CreateGrid();
+        // If the instance doesn't exist, find or create it
+        if (_instance == null)
+        {
+            _instance = FindObjectOfType<GridManager>();
+
+            // If no instance exists in the scene, create a new GameObject and add the script
+            if (_instance == null)
+            {
+                GameObject singletonObject = new GameObject(nameof(GridManager));
+                _instance = singletonObject.AddComponent<GridManager>();
+            }
+        }
+
+        return _instance;
+    }
+
+    public GameObject[,] GetGrid()
+    {
+        return this._grid;
     }
 
     private void CreateGrid()
@@ -77,4 +108,35 @@ public class GridManager : MonoBehaviour
         // Storing the cube in the grid array
         _grid[x, z] = cube;
     }
+    
+    // ====================================================================================
+    
+    
+    // ====================================================================================
+    // MonoBehaviour methods:
+    // ====================================================================================
+
+    private void Awake()
+    {
+        // Ensure there's only one instance, and persist it between scenes
+        // -Ste: This useless for the project's purposes, but this is how you implement singleton pattern in Unity
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            // If another instance already exists, destroy this one
+            Destroy(gameObject);
+        }
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        CreateGrid();
+    }
+    
+    // ====================================================================================
 }
