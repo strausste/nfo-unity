@@ -11,35 +11,34 @@ public class GridManager : MonoBehaviour
     // ====================================================================================
     // Class attributes
     // ====================================================================================
-    
+
     private GameObject[,] _grid;
 
-    [Header("Grid settings")]
-    [SerializeField] private int gridSizeX = 64;
+    [Header("Grid settings")] [SerializeField]
+    private int gridSizeX = 64;
+
     [SerializeField] private int gridSizeY = 64;
 
-    [Header("Positions")] 
-    [SerializeField] private Vector2Int[] obstaclesPosition;
+    [Header("Positions")] [SerializeField] private Vector2Int[] obstaclesPosition;
     [SerializeField] private Vector2Int sourcePosition;
     [SerializeField] private Vector2Int destinationPosition;
 
-    [Header("Prefabs")] 
-    [SerializeField] private GameObject gridParent;
+    [Header("Prefabs")] [SerializeField] private GameObject gridParent;
     [SerializeField] private GameObject walkablePrefab;
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject sourcePrefab;
     [SerializeField] private GameObject destinationPrefab;
 
     // Static reference to the instance (singleton pattern)
-    private static GridManager _instance; 
-    
+    private static GridManager _instance;
+
     // ====================================================================================
-    
-    
+
+
     // ====================================================================================
     // Class methods
     // ====================================================================================
-    
+
     // Public property to access the instance
     public static GridManager GetInstance()
     {
@@ -59,11 +58,26 @@ public class GridManager : MonoBehaviour
         return _instance;
     }
 
+    public Vector2Int GetGridSize()
+    {
+        return new Vector2Int(gridSizeX, gridSizeY);
+    }
+
     public GameObject[,] GetGrid()
     {
         return this._grid;
     }
 
+    public Vector2Int GetSourcePosition()
+    {
+        return this.sourcePosition;
+    }
+    
+    public Vector2Int GetDestinationPosition()
+    {
+        return this.destinationPosition;
+    }
+    
     private void CreateGrid()
     {
         _grid = new GameObject[gridSizeX, gridSizeY];
