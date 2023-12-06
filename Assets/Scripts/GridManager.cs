@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
+
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class GridManager : MonoBehaviour
 {
@@ -14,16 +9,17 @@ public class GridManager : MonoBehaviour
 
     private GameObject[,] _grid;
 
-    [Header("Grid settings")] [SerializeField]
-    private int gridSizeX = 64;
-
+    [Header("Grid settings")] 
+    [SerializeField] private int gridSizeX = 64;
     [SerializeField] private int gridSizeY = 64;
 
-    [Header("Positions")] [SerializeField] private Vector2Int[] obstaclesPosition;
+    [Header("Positions")] 
+    [SerializeField] private Vector2Int[] obstaclesPosition;
     [SerializeField] private Vector2Int sourcePosition;
     [SerializeField] private Vector2Int destinationPosition;
 
-    [Header("Prefabs")] [SerializeField] private GameObject gridParent;
+    [Header("Prefabs")] 
+    [SerializeField] private GameObject gridParent;
     [SerializeField] private GameObject walkablePrefab;
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject sourcePrefab;
