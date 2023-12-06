@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DijkstraManager : MonoBehaviour
+public class AStarManager : MonoBehaviour
 {
     // ====================================================================================
     // Class attributes
@@ -70,7 +71,7 @@ public class DijkstraManager : MonoBehaviour
         
         // ====================================================================================
         
-        // Dijkstra's
+        // A*
         
         for (int i = 0; i < _rows; i++)
         {
@@ -143,7 +144,18 @@ public class DijkstraManager : MonoBehaviour
                 {
                     // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
                     int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
+
+                    int heuristic = Convert.ToInt32(Heuristics.ManhattanDistance(currentPosition, _destinationPosition));
+                    distance += heuristic;
                     
+                    // TODO: change 'distance' to 'cost' lol
+                    Debug.Log("===");
+                    Debug.Log("Current position: " + currentPosition.x + "," + currentPosition.y);
+                    Debug.Log("Current Neighbor: " + neighborX + "," + neighborY );
+                    Debug.Log("Distance value: " + (distance - heuristic));
+                    Debug.Log("Heuristic value: + " + heuristic);
+                    Debug.Log("===");
+
                     // Check optimality condition
                     if (!_isVisited[neighborX, neighborY] && distance < _distances[neighborX, neighborY])
                     {
@@ -164,7 +176,7 @@ public class DijkstraManager : MonoBehaviour
         
         // ====================================================================================
         
-        Debug.Log("(Dijkstra's) number of steps: " + _numberOfSteps);
+        Debug.Log("(A*) number of steps: " + _numberOfSteps);
         
         // ====================================================================================
         
