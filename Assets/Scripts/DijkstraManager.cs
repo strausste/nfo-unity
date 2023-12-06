@@ -9,8 +9,17 @@ public class DijkstraManager : MonoBehaviour
     // ====================================================================================
     // Class attributes
     // ====================================================================================
+
+    [Header("Costs")] 
+    [SerializeField] private int orthogonalCost = 1;
+    [SerializeField] private int diagonalCost = 1;
+
+    [Header("Booleans")] 
+    [SerializeField] private bool displayVisited;
     
+    [Header("Scripts")] 
     [SerializeField] private GridManager gridManager;
+    
     private GameObject[,] _grid;
     
     private int _rows;
@@ -132,9 +141,8 @@ public class DijkstraManager : MonoBehaviour
                 // Check if the neighbor is inside the grid
                 if ((neighborX >= 0 && neighborX < _rows) && (neighborY >= 0 && neighborY < _columns))
                 {
-                    // Calculate the distance
-                    int distance = _distances[x, y] + 1; // [we are assigning 1 to each neighbor!]
-                    // TODO: different distances for diagonal and h/v movements?
+                    // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
+                    int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
                     
                     // Check optimality condition
                     if (!_isVisited[neighborX, neighborY] && distance < _distances[neighborX, neighborY])
@@ -204,9 +212,31 @@ public class DijkstraManager : MonoBehaviour
         
         Debug.Log("(Reconstruct path) number of steps: " + _numberOfSteps);
 
+        // Show in the grid the cubes the algorithm visited
+        if (displayVisited)
+        {
+            for (int x = 0; x < _rows; x++)
+            {
+                for (int y = 0; y < _columns; y++)
+                {
+                    if (_isVisited[x,y])
+                    {
+                        gridManager.DeleteCube(x, y);
+                        gridManager.CreateCube(gridManager.GetVisitedPrefab(), x, y);
+                    }
+                }
+            }
+        }
+
         // Create path cubes
         foreach (var cube in _path)
         {
+            // Leave source and destination visible
+            if (cube == _sourcePosition || cube == _destinationPosition)
+            {
+                continue; 
+            }
+
             gridManager.DeleteCube(cube.x, cube.y);
             gridManager.CreateCube(gridManager.GetPathPrefab(), cube.x, cube.y);
         }

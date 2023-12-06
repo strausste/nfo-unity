@@ -49,6 +49,20 @@ public class Directions
         return _numberOfDirections;
     }
 
+    /** Returns true iff deltaIndex is associated to an orthogonal movement, false otherwise*/
+    public static bool IsIndexOrthogonal(int deltaIndex)
+    {
+        // Orthogonal movements are in the even positions of the Deltas enum
+        return deltaIndex % 2 == 0;
+    }
+    
+    /** Returns true iff deltaIndex is associated to a diagonal movement, false otherwise*/
+    public static bool IsIndexDiagonal(int deltaIndex)
+    {
+        // Diagonal movements are in the odd positions of the Deltas enum
+        return deltaIndex % 2 == 1;
+    }
+    
     // ====================================================================================
     
     
