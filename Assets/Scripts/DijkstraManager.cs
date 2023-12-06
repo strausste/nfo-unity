@@ -132,7 +132,7 @@ public class DijkstraManager : MonoBehaviour
             // Mark the cube as visited
             _isVisited[x, y] = true;
             
-            // Check neighbors (in each direction), similar to checking leaving arcs
+            // Check neighbors in each direction (similar to checking leaving arcs)
             for (int i = 0; i < Directions.GetNumberOfDirections(); i++)
             {
                 int neighborX = x + Directions.GetDx()[i];
@@ -156,6 +156,9 @@ public class DijkstraManager : MonoBehaviour
                         // Add neighbor to the priority queue
                         priorityQueue.Enqueue((neighborX, neighborY));
                     }
+                    
+                    // Mark the neighbor's cube as visited
+                    _isVisited[neighborX, neighborY] = true; // !!! Without this, performs better lol -> if is it visited, it doesn't visit it again even if it is optimal...
                 }
 
                 _numberOfSteps++;
@@ -176,8 +179,7 @@ public class DijkstraManager : MonoBehaviour
         
         // Starting from destination
         Vector2Int current = new Vector2Int(_destinationPosition.x, _destinationPosition.y) ;
-        
-        
+
         // To source
         while (!current.Equals(new Vector2Int(_sourcePosition.x, _sourcePosition.y)))
         {
@@ -219,6 +221,14 @@ public class DijkstraManager : MonoBehaviour
             {
                 for (int y = 0; y < _columns; y++)
                 {
+                    current = new Vector2Int(x, y);
+                    
+                    // Leave obstacles, source and destination visible
+                    if (current == _sourcePosition || current == _destinationPosition || _obstaclesPosition.Contains(current))
+                    {
+                        continue;
+                    }
+                    
                     if (_isVisited[x,y])
                     {
                         gridManager.DeleteCube(x, y);
@@ -231,8 +241,8 @@ public class DijkstraManager : MonoBehaviour
         // Create path cubes
         foreach (var cube in _path)
         {
-            // Leave source and destination visible
-            if (cube == _sourcePosition || cube == _destinationPosition)
+            // Leave obstacles, source and destination visible
+            if (cube == _sourcePosition || cube == _destinationPosition || _obstaclesPosition.Contains(cube))
             {
                 continue; 
             }

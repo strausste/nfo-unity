@@ -145,7 +145,7 @@ public class AStarManager : MonoBehaviour
                     // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
                     int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
 
-                    int heuristic = Convert.ToInt32(Heuristics.ManhattanDistance(currentPosition, _destinationPosition));
+                    int heuristic = Convert.ToInt32(Heuristics.ManhattanDistance((i % 2) + 1,currentPosition, _destinationPosition));
                     distance += heuristic;
                     
                     // TODO: change 'distance' to 'cost' lol
