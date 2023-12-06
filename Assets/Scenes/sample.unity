@@ -459,7 +459,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orthogonalCost: 1
-  diagonalCost: 2
+  diagonalCost: 1
   displayVisited: 1
   gridManager: {fileID: 1912865270}
 --- !u!1 &1912865268

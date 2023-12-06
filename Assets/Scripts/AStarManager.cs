@@ -27,7 +27,9 @@ public class AStarManager : MonoBehaviour
     private int _columns;
     
     private int[,] _distances;
-    private bool[,] _isVisited;
+    private bool[,] _isVisited; // used by algorithm
+
+    private bool[,] _neighborsVisited; // used for visualization only
 
     private Vector2Int[,] _pred; // matrix of Vector2Int coordinates
 
@@ -67,11 +69,12 @@ public class AStarManager : MonoBehaviour
         _isVisited = new bool[_rows, _columns];
         _pred = new Vector2Int[_rows, _columns];
 
+        _neighborsVisited = new bool[_rows, _columns];
         _numberOfSteps = 0;
         
         // ====================================================================================
         
-        // A*
+        // Dijkstra's
         
         for (int i = 0; i < _rows; i++)
         {
@@ -133,7 +136,7 @@ public class AStarManager : MonoBehaviour
             // Mark the cube as visited
             _isVisited[x, y] = true;
             
-            // Check neighbors (in each direction), similar to checking leaving arcs
+            // Check neighbors in each direction (similar to checking leaving arcs)
             for (int i = 0; i < Directions.GetNumberOfDirections(); i++)
             {
                 int neighborX = x + Directions.GetDx()[i];
@@ -144,18 +147,11 @@ public class AStarManager : MonoBehaviour
                 {
                     // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
                     int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
-
-                    int heuristic = Convert.ToInt32(Heuristics.ManhattanDistance((i % 2) + 1,currentPosition, _destinationPosition));
+                    
+                    // int heuristic = Convert.ToInt32(Heuristics.ManhattanDistance(1,currentPosition, _destinationPosition));
+                    int heuristic = Convert.ToInt32(Heuristics.EuclideanDistance(currentPosition, _destinationPosition));
                     distance += heuristic;
                     
-                    // TODO: change 'distance' to 'cost' lol
-                    Debug.Log("===");
-                    Debug.Log("Current position: " + currentPosition.x + "," + currentPosition.y);
-                    Debug.Log("Current Neighbor: " + neighborX + "," + neighborY );
-                    Debug.Log("Distance value: " + (distance - heuristic));
-                    Debug.Log("Heuristic value: + " + heuristic);
-                    Debug.Log("===");
-
                     // Check optimality condition
                     if (!_isVisited[neighborX, neighborY] && distance < _distances[neighborX, neighborY])
                     {
@@ -168,6 +164,9 @@ public class AStarManager : MonoBehaviour
                         // Add neighbor to the priority queue
                         priorityQueue.Enqueue((neighborX, neighborY));
                     }
+                    
+                    // (For visualization purpose only! Not part of Dijkstra's algorithm)
+                    _neighborsVisited[neighborX, neighborY] = true;
                 }
 
                 _numberOfSteps++;
@@ -188,8 +187,7 @@ public class AStarManager : MonoBehaviour
         
         // Starting from destination
         Vector2Int current = new Vector2Int(_destinationPosition.x, _destinationPosition.y) ;
-        
-        
+
         // To source
         while (!current.Equals(new Vector2Int(_sourcePosition.x, _sourcePosition.y)))
         {
@@ -231,7 +229,15 @@ public class AStarManager : MonoBehaviour
             {
                 for (int y = 0; y < _columns; y++)
                 {
-                    if (_isVisited[x,y])
+                    current = new Vector2Int(x, y);
+                    
+                    // Leave obstacles, source and destination visible
+                    if (current == _sourcePosition || current == _destinationPosition || _obstaclesPosition.Contains(current))
+                    {
+                        continue;
+                    }
+                    
+                    if (_isVisited[x,y] || _neighborsVisited[x,y])
                     {
                         gridManager.DeleteCube(x, y);
                         gridManager.CreateCube(gridManager.GetVisitedPrefab(), x, y);
@@ -243,8 +249,8 @@ public class AStarManager : MonoBehaviour
         // Create path cubes
         foreach (var cube in _path)
         {
-            // Leave source and destination visible
-            if (cube == _sourcePosition || cube == _destinationPosition)
+            // Leave obstacles, source and destination visible
+            if (cube == _sourcePosition || cube == _destinationPosition || _obstaclesPosition.Contains(cube))
             {
                 continue; 
             }
