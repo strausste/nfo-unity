@@ -73,6 +73,26 @@ public class GridManager : MonoBehaviour
     {
         return this.destinationPosition;
     }
+
+    public GameObject GetWalkablePrefab()
+    {
+        return this.walkablePrefab;
+    }
+    
+    public GameObject GetObstaclePrefab()
+    {
+        return this.obstaclePrefab;
+    }
+    
+    public GameObject GetSourcePrefab()
+    {
+        return this.sourcePrefab;
+    }
+    
+    public GameObject GetDestinationPrefab()
+    {
+        return this.destinationPrefab;
+    }
     
     private void CreateGrid()
     {
@@ -91,23 +111,23 @@ public class GridManager : MonoBehaviour
         foreach (var op in obstaclesPosition)
         {
             // Destroy walkable cubes in that position
-            Destroy(_grid[op.x, op.y]);
+            DeleteCube(op.x, op.y);
 
             // Create obstacle cubes instead
             CreateCube(obstaclePrefab, op.x, op.y);
         }
 
         // Source
-        Destroy(_grid[sourcePosition.x, sourcePosition.y]);
+        DeleteCube(sourcePosition.x, sourcePosition.y);
         CreateCube(sourcePrefab, sourcePosition.x, sourcePosition.y);
 
         // Destination
-        Destroy(_grid[destinationPosition.x, destinationPosition.y]);
+        DeleteCube(destinationPosition.x, destinationPosition.y);
         CreateCube(destinationPrefab, destinationPosition.x, destinationPosition.y);
     }
 
     /** Instantiates and stores the desired prefab in the _grid*/
-    private void CreateCube(GameObject prefab, int x, int z)
+    public void CreateCube(GameObject prefab, int x, int z)
     {
         Vector3 cubePosition = new Vector3(x, 0, z); // y is set to 0 because all cubes have the same height
 
@@ -117,6 +137,11 @@ public class GridManager : MonoBehaviour
 
         // Storing the cube in the grid array
         _grid[x, z] = cube;
+    }
+
+    public void DeleteCube(int x, int z)
+    {
+        Destroy(_grid[x, z]);
     }
     
     // ====================================================================================
