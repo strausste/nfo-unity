@@ -472,3 +472,5 @@ MonoBehaviour:
   obstaclePrefab: {fileID: 1598100107564917731, guid: 8a54053d5bf0c584b9c2a05c83f8169d, type: 3}
   sourcePrefab: {fileID: 6658830772191923426, guid: 0a1d32c06c8f0bc48a340c4d9ff9dfcd, type: 3}
   destinationPrefab: {fileID: 1536108816490154417, guid: de7d41ae2e7a8aa48bea84f54c0e21d9, type: 3}
+  pathPrefab: {fileID: 5587997227885227068, guid: 482eff2717edbf84981775f6123657c1, type: 3}
+  visitedPrefab: {fileID: 5587997227885227068, guid: 03054d0562b92464faa22a53a797c54e, type: 3}

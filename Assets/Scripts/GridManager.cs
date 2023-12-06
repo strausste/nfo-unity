@@ -20,10 +20,14 @@ public class GridManager : MonoBehaviour
 
     [Header("Prefabs")] 
     [SerializeField] private GameObject gridParent;
+    
     [SerializeField] private GameObject walkablePrefab;
     [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private GameObject sourcePrefab;
     [SerializeField] private GameObject destinationPrefab;
+    
+    [SerializeField] private GameObject pathPrefab;
+    [SerializeField] private GameObject visitedPrefab;
 
     // Static reference to the instance (singleton pattern)
     private static GridManager _instance;
@@ -74,6 +78,11 @@ public class GridManager : MonoBehaviour
         return this.destinationPosition;
     }
 
+    public Vector2Int[] GetObstaclesPosition()
+    {
+        return this.obstaclesPosition;
+    }
+
     public GameObject GetWalkablePrefab()
     {
         return this.walkablePrefab;
@@ -87,6 +96,16 @@ public class GridManager : MonoBehaviour
     public GameObject GetSourcePrefab()
     {
         return this.sourcePrefab;
+    }
+    
+    public GameObject GetPathPrefab()
+    {
+        return this.pathPrefab;
+    }
+    
+    public GameObject GetVisitedPrefab()
+    {
+        return this.visitedPrefab;
     }
     
     public GameObject GetDestinationPrefab()
@@ -126,7 +145,7 @@ public class GridManager : MonoBehaviour
         CreateCube(destinationPrefab, destinationPosition.x, destinationPosition.y);
     }
 
-    /** Instantiates and stores the desired prefab in the _grid*/
+    /** Instantiates and stores the desired prefab in the _grid */
     public void CreateCube(GameObject prefab, int x, int z)
     {
         Vector3 cubePosition = new Vector3(x, 0, z); // y is set to 0 because all cubes have the same height
@@ -165,13 +184,9 @@ public class GridManager : MonoBehaviour
             // If another instance already exists, destroy this one
             Destroy(gameObject);
         }
-    }
-
-    // Start is called before the first frame update
-    private void Start()
-    {
+        
         CreateGrid();
     }
-    
+
     // ====================================================================================
 }

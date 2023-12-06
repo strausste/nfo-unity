@@ -24,6 +24,8 @@ public class DijkstraManager : MonoBehaviour
     private Vector2Int _sourcePosition;
     private Vector2Int _destinationPosition;
 
+    private Vector2Int[] _obstaclesPosition;
+
     private List<Vector2Int> _path;
 
     private int _numberOfSteps;
@@ -45,6 +47,8 @@ public class DijkstraManager : MonoBehaviour
 
         _sourcePosition = gridManager.GetSourcePosition();
         _destinationPosition = gridManager.GetDestinationPosition();
+
+        _obstaclesPosition = gridManager.GetObstaclesPosition();
 
         _rows = gridManager.GetGridSize().x;
         _columns = gridManager.GetGridSize().y;
@@ -90,11 +94,30 @@ public class DijkstraManager : MonoBehaviour
         {
             // Extract the cube with the smallest distance
             (int x, int y) = priorityQueue.Dequeue();
+
+            Vector2Int currentPosition = new Vector2Int(x, y);
             
             // Break the loop if we reach destination position
-            if (new Vector2Int(x, y) == _destinationPosition)
+            if (currentPosition == _destinationPosition)
             {
                 break;
+            }
+            
+            // Check if this is an obstacle cube
+            bool isObstacle = false;
+            
+            foreach (var obstacle in _obstaclesPosition)
+            {
+                if (currentPosition == obstacle)
+                {
+                    isObstacle = true;
+                }
+            }
+
+            // Skip this iteration if we reach obstacle position
+            if (isObstacle)
+            {
+                continue;
             }
             
             // Mark the cube as visited
@@ -120,10 +143,10 @@ public class DijkstraManager : MonoBehaviour
                         _distances[neighborX, neighborY] = distance;
                         
                         // Update predecessor
-                        _pred[neighborX, neighborY] = new Vector2Int(x, y);
+                        _pred[neighborX, neighborY] = currentPosition;
                         
                         // Add neighbor to the priority queue
-                        priorityQueue.Enqueue((neighborX, neighborY)); // TODO: !!!
+                        priorityQueue.Enqueue((neighborX, neighborY));
                     }
                 }
 
@@ -172,9 +195,24 @@ public class DijkstraManager : MonoBehaviour
 
         // ====================================================================================
         
+        
+        // ====================================================================================
+        
+        // Update scenario:
+        
         _path.ForEach(t => Debug.Log(t));
         
         Debug.Log("(Reconstruct path) number of steps: " + _numberOfSteps);
+
+        // Create path cubes
+        foreach (var cube in _path)
+        {
+            gridManager.DeleteCube(cube.x, cube.y);
+            gridManager.CreateCube(gridManager.GetPathPrefab(), cube.x, cube.y);
+        }
+
+        // ====================================================================================
+        
     }
     
     // ====================================================================================
