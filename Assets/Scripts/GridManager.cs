@@ -173,7 +173,7 @@ public class GridManager : MonoBehaviour
     private void Awake()
     {
         // Ensure there's only one instance, and persist it between scenes
-        // -Ste: This useless for the project's purposes, but this is how you implement singleton pattern in Unity
+        // This is useless for the project's purposes, but this is how you implement singleton pattern in Unity
         if (_instance == null)
         {
             _instance = this;

@@ -26,7 +26,9 @@ public class DijkstraManager : MonoBehaviour
     private int _columns;
     
     private int[,] _distances;
-    private bool[,] _isVisited;
+    private bool[,] _isVisited; // used by algorithm
+
+    private bool[,] _neighborsVisited; // used for visualization only
 
     private Vector2Int[,] _pred; // matrix of Vector2Int coordinates
 
@@ -66,6 +68,7 @@ public class DijkstraManager : MonoBehaviour
         _isVisited = new bool[_rows, _columns];
         _pred = new Vector2Int[_rows, _columns];
 
+        _neighborsVisited = new bool[_rows, _columns];
         _numberOfSteps = 0;
         
         // ====================================================================================
@@ -157,8 +160,8 @@ public class DijkstraManager : MonoBehaviour
                         priorityQueue.Enqueue((neighborX, neighborY));
                     }
                     
-                    // Mark the neighbor's cube as visited
-                    _isVisited[neighborX, neighborY] = true; // !!! Without this, performs better lol -> if is it visited, it doesn't visit it again even if it is optimal...
+                    // (For visualization purpose only! Not part of Dijkstra's algorithm)
+                    _neighborsVisited[neighborX, neighborY] = true;
                 }
 
                 _numberOfSteps++;
@@ -229,7 +232,7 @@ public class DijkstraManager : MonoBehaviour
                         continue;
                     }
                     
-                    if (_isVisited[x,y])
+                    if (_isVisited[x,y] || _neighborsVisited[x,y])
                     {
                         gridManager.DeleteCube(x, y);
                         gridManager.CreateCube(gridManager.GetVisitedPrefab(), x, y);
