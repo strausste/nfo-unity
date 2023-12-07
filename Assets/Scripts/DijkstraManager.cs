@@ -114,7 +114,7 @@ public class DijkstraManager : MonoBehaviour
             {
                 break;
             }
-            
+
             // Check if this is an obstacle cube
             bool isObstacle = false;
             
@@ -145,10 +145,11 @@ public class DijkstraManager : MonoBehaviour
                 if ((neighborX >= 0 && neighborX < _rows) && (neighborY >= 0 && neighborY < _columns))
                 {
                     // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
-                    int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
+                    int movementCost = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
+                    int distance = _distances[x,y] + movementCost;
                     
                     // Check optimality condition
-                    if (!_isVisited[neighborX, neighborY] && distance < _distances[neighborX, neighborY])
+                    if (distance < _distances[neighborX, neighborY])
                     {
                         // Update distance if this is shorter
                         _distances[neighborX, neighborY] = distance;

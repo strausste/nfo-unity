@@ -201,8 +201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ce7cd5c49cb5ec4b84071ada556bd33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  orthogonalCost: 1
-  diagonalCost: 1
+  orthogonalCost: 15
+  diagonalCost: 21
   displayVisited: 1
   gridManager: {fileID: 1912865270}
 --- !u!1 &705507993
@@ -458,9 +458,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8a64a248b2d3c34d89d3a5a4c4b8fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heuristic: 0
-  orthogonalCost: 1
-  diagonalCost: 1
+  heuristic: 1
+  orthogonalCost: 8
+  diagonalCost: 15
   displayVisited: 1
   gridManager: {fileID: 1912865270}
 --- !u!1 &1912865268
