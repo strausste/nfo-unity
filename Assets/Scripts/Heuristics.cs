@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 public class Heuristics
@@ -8,12 +9,14 @@ public class Heuristics
     // ====================================================================================
     // Class attributes
     // ====================================================================================
-    
-    // Euclidean (2 directions)
-    // Manhattan (4 directions)
-    // Diagonal distance (8 directions)
-    
-    // Source: https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+
+    public enum HeuristicName
+    {
+        Euclidean,
+        Manhattan,
+        Chebyshev,
+        OctileDistance
+    }
     
     // ====================================================================================
     
@@ -21,18 +24,51 @@ public class Heuristics
     // ====================================================================================
     // Class methods
     // ====================================================================================
+
+    public static int CalculateHeuristic(HeuristicName heuristic, Vector2Int first, Vector2Int second)
+    {
+        switch (heuristic)
+        {
+            case HeuristicName.Euclidean:
+                return EuclideanDistance(first, second);
+            case HeuristicName.Manhattan:
+                return ManhattanDistance(first, second);
+            case HeuristicName.Chebyshev:
+                return ChebyshevDistance(first, second);
+            case HeuristicName.OctileDistance:
+                return OctileDiagonalDistance(first, second);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(heuristic), heuristic, null);
+        }
+    }
     
-    public static double EuclideanDistance(Vector2Int first, Vector2Int second)
+    public static int EuclideanDistance(Vector2Int first, Vector2Int second)
     {
         float dx = Math.Abs(first.x - second.x);
         float dy = Math.Abs(first.y - second.y);
-        return Math.Sqrt( (dx * dx) + (dy * dy) );
+        return (int) Math.Sqrt( (dx * dx) + (dy * dy) );
     }
     
-    public static decimal ManhattanDistance(Vector2Int first, Vector2Int second)
+    public static int ManhattanDistance(Vector2Int first, Vector2Int second)
     {
         return Math.Abs(first.x - second.x) + Math.Abs(first.y - second.y);
     }
+
+    public static int ChebyshevDistance(Vector2Int first, Vector2Int second)
+    {
+        int dx = Mathf.Abs(first.x - second.x);
+        int dy = Mathf.Abs(first.y - second.y);
+
+        return Math.Max(dx, dy);
+    }
     
+    public static int OctileDiagonalDistance(Vector2Int first, Vector2Int second)
+    {
+        int dx = Mathf.Abs(first.x - second.x);
+        int dy = Mathf.Abs(first.y - second.y);
+
+        return Math.Max(dx, dy) + (int)((Mathf.Sqrt(2) - 1) * Mathf.Min(dx, dy));
+    }
+
     // ====================================================================================
 }

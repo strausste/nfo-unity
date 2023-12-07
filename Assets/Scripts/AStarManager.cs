@@ -11,6 +11,9 @@ public class AStarManager : MonoBehaviour
     // Class attributes
     // ====================================================================================
 
+    [Header("Heuristic function")] 
+    [SerializeField] private Heuristics.HeuristicName heuristic;
+    
     [Header("Costs")] 
     [SerializeField] private int orthogonalCost = 1;
     [SerializeField] private int diagonalCost = 1;
@@ -97,8 +100,8 @@ public class AStarManager : MonoBehaviour
         // Priority queue to store nodes (cubes)'s coordinates based on their distances
         PriorityQueue<(int, int)> priorityQueue = new PriorityQueue<(int, int)>((a, b) =>
         {
-            int costA = Convert.ToInt32(_distances[a.Item1, a.Item2] + Heuristics.ManhattanDistance(new Vector2Int(a.Item1, a.Item2), _destinationPosition));
-            int costB = Convert.ToInt32(_distances[b.Item1, b.Item2] + Heuristics.ManhattanDistance(new Vector2Int(b.Item1, b.Item2), _destinationPosition));
+            int costA = _distances[a.Item1, a.Item2] + Heuristics.CalculateHeuristic(heuristic, new Vector2Int(a.Item1, a.Item2), _destinationPosition);
+            int costB = _distances[b.Item1, b.Item2] + Heuristics.CalculateHeuristic(heuristic, new Vector2Int(b.Item1, b.Item2), _destinationPosition);
             
             return costA.CompareTo(costB);
         });
@@ -154,7 +157,7 @@ public class AStarManager : MonoBehaviour
                     int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
                     
                     // We add up heuristic to the distance
-                    distance += Convert.ToInt32(Heuristics.ManhattanDistance(new Vector2Int(neighborX, neighborY), _destinationPosition));
+                    distance += Heuristics.CalculateHeuristic(heuristic, new Vector2Int(neighborX, neighborY), _destinationPosition);
 
                     // Check optimality condition
                     if (!_isVisited[neighborX, neighborY] && distance < _distances[neighborX, neighborY])
