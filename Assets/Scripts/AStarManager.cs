@@ -225,7 +225,7 @@ public class AStarManager : MonoBehaviour
         
         // Update scenario:
         
-        _path.ForEach(t => Debug.Log(t));
+        // _path.ForEach(t => Debug.Log(t));
         
         Debug.Log("(Reconstruct path) number of steps: " + _numberOfSteps);
 
