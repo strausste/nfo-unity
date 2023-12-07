@@ -29,9 +29,9 @@ public class Heuristics
         return Math.Sqrt( (dx * dx) + (dy * dy) );
     }
     
-    public static decimal ManhattanDistance(int d, Vector2Int first, Vector2Int second)
+    public static decimal ManhattanDistance(Vector2Int first, Vector2Int second)
     {
-        return d * (Math.Abs(first.x - second.x) + Math.Abs(first.y - second.y)) ;
+        return Math.Abs(first.x - second.x) + Math.Abs(first.y - second.y);
     }
     
     // ====================================================================================

@@ -74,7 +74,7 @@ public class AStarManager : MonoBehaviour
         
         // ====================================================================================
         
-        // Dijkstra's
+        // A*
         
         for (int i = 0; i < _rows; i++)
         {
@@ -96,7 +96,12 @@ public class AStarManager : MonoBehaviour
         
         // Priority queue to store nodes (cubes)'s coordinates based on their distances
         PriorityQueue<(int, int)> priorityQueue = new PriorityQueue<(int, int)>((a, b) =>
-            _distances[a.Item1, a.Item2].CompareTo(_distances[b.Item1, b.Item2])); // C# Tuples, and C#'s default CompareTo()
+        {
+            int costA = Convert.ToInt32(_distances[a.Item1, a.Item2] + Heuristics.ManhattanDistance(new Vector2Int(a.Item1, a.Item2), _destinationPosition));
+            int costB = Convert.ToInt32(_distances[b.Item1, b.Item2] + Heuristics.ManhattanDistance(new Vector2Int(b.Item1, b.Item2), _destinationPosition));
+            
+            return costA.CompareTo(costB);
+        });
         
         // Add source to the priority queue
         priorityQueue.Enqueue((_sourcePosition.x, _sourcePosition.y));
@@ -148,10 +153,9 @@ public class AStarManager : MonoBehaviour
                     // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
                     int distance = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
                     
-                    // int heuristic = Convert.ToInt32(Heuristics.ManhattanDistance(1,currentPosition, _destinationPosition));
-                    int heuristic = Convert.ToInt32(Heuristics.EuclideanDistance(currentPosition, _destinationPosition));
-                    distance += heuristic;
-                    
+                    // We add up heuristic to the distance
+                    distance += Convert.ToInt32(Heuristics.ManhattanDistance(new Vector2Int(neighborX, neighborY), _destinationPosition));
+
                     // Check optimality condition
                     if (!_isVisited[neighborX, neighborY] && distance < _distances[neighborX, neighborY])
                     {
