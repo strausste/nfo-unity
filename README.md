@@ -7,7 +7,7 @@
 
 Ensure the GridManager game object is active (default is active); \
 Ensure the DijkstraManager game object is not set to active (default is not active); \
-Ensure the AStarManager game object is not set to active (default is not active); \
+Ensure the AStarManager game object is not set to active (default is not active);
 
 ## Dijkstra's algorithm
 
