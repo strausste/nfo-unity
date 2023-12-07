@@ -173,6 +173,12 @@ public class DijkstraManager : MonoBehaviour
         
         Debug.Log("(Dijkstra's) number of steps: " + _numberOfSteps);
         
+        int visitedCubesCount = Enumerable.Range(0, _rows)
+            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
+            .Count(coord => _isVisited[coord.X, coord.Y]);
+            
+        Debug.Log("(Dijkstra's) " + ", number of visited cubes: " + visitedCubesCount);
+        
         // ====================================================================================
         
         // Reconstruct path

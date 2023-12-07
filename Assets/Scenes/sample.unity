@@ -459,8 +459,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heuristic: 1
-  orthogonalCost: 8
-  diagonalCost: 15
+  orthogonalCost: 15
+  diagonalCost: 21
   displayVisited: 1
   gridManager: {fileID: 1912865270}
 --- !u!1 &1912865268
