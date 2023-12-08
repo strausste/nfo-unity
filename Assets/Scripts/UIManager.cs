@@ -19,6 +19,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI algorithmText;
     [SerializeField] private TextMeshProUGUI pathCostText;
+    [SerializeField] private TextMeshProUGUI executionTimeText;
 
     // Static reference to the instance (singleton pattern)
     private static UIManager _instance;
@@ -57,6 +58,11 @@ public class UIManager : MonoBehaviour
     public void SetPathCostText(int cost)
     {
         pathCostText.SetText("SP cost: " + cost);
+    }
+    
+    public void SetExecutionTimeText(int time)
+    {
+        executionTimeText.SetText("Execution time: " + time + "ms");
     }
     
     // ====================================================================================

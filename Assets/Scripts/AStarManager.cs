@@ -81,6 +81,9 @@ public class AStarManager : MonoBehaviour
         // A*
         // ====================================================================================
         
+        // Start execution time measurement
+        var watch = System.Diagnostics.Stopwatch.StartNew(); 
+        
         for (int i = 0; i < _rows; i++)
         {
             for (int j = 0; j < _columns; j++)
@@ -192,7 +195,8 @@ public class AStarManager : MonoBehaviour
         
         _path = Path.ReconstructPath(_pred, _sourcePosition, _destinationPosition);
         
-        Debug.Log("(A* " + heuristic + ") Path cost: " + Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        // Stop execution time measurement
+        watch.Stop();
 
         // ====================================================================================
         
@@ -203,6 +207,7 @@ public class AStarManager : MonoBehaviour
         
         uIManager.SetAlgorithmText((UIManager.Algorithms)(heuristic + 1)); // + 1 because there's a 1 offset from Heuristics.HeuristicName and UIManager.algorithm
         uIManager.SetPathCostText(Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        uIManager.SetExecutionTimeText((int)watch.ElapsedMilliseconds);
         
         // ====================================================================================
 

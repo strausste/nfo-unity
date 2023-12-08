@@ -79,6 +79,9 @@ public class DijkstraManager : MonoBehaviour
         // ====================================================================================
         // Dijkstra
         // ====================================================================================
+
+        // Start execution time measurement
+        var watch = System.Diagnostics.Stopwatch.StartNew(); 
         
         for (int i = 0; i < _rows; i++)
         {
@@ -183,6 +186,9 @@ public class DijkstraManager : MonoBehaviour
         
         _path = Path.ReconstructPath(_pred, _sourcePosition, _destinationPosition);
         
+        // Stop execution time measurement
+        watch.Stop();
+        
         // ====================================================================================
         
         
@@ -192,6 +198,7 @@ public class DijkstraManager : MonoBehaviour
         
         uIManager.SetAlgorithmText(UIManager.Algorithms.DIJKSTRA);
         uIManager.SetPathCostText(Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        uIManager.SetExecutionTimeText((int)watch.ElapsedMilliseconds);
         
         // ====================================================================================
         
