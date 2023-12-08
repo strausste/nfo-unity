@@ -44,10 +44,10 @@ public class UIManager : MonoBehaviour
                 algorithmText.SetText("Algorithm: A* - Manhattan distance");
                 break;
             case Algorithms.A_STAR_CHEBYSHEV:
-                algorithmText.SetText("Algorithm: A* - Chebyshev distance");
+                algorithmText.SetText("Algorithm: A* - Chebyshev's distance");
                 break;
             case Algorithms.A_STAR_OCTILE:
-                algorithmText.SetText("Algorithm: A* - Chebyshev distance");
+                algorithmText.SetText("Algorithm: A* - Octile distance");
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
     
     public void SetPathCostText(int cost)
     {
-        pathCostText.SetText("Cost: " + cost);
+        pathCostText.SetText("SP cost: " + cost);
     }
     
     // ====================================================================================
