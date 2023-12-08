@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -148,6 +149,35 @@ public class GridManager : MonoBehaviour
         CreateCube(destinationPrefab, destinationPosition.x, destinationPosition.y);
     }
 
+    private void DeleteGrid()
+    {
+        if (_grid == null)
+        {
+            throw new NullReferenceException();
+        }
+        
+        // Delete all the cubes regardless
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int z = 0; z < gridSizeY; z++)
+            {
+                DeleteCube(x, z);
+            }
+        }
+        
+        // Set grid to null
+        _grid = null;
+    }
+
+    public void RecreateGrid()
+    {
+        // Delete grid
+        DeleteGrid();
+        
+        // And then recreate it
+        CreateGrid();
+    }
+    
     public void UpdateScenarioAfterPathComputation(List<Vector2Int> path, bool displayVisited, bool[,] isVisited)
     {
         // Show in the grid the cubes the algorithm visited

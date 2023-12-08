@@ -63,12 +63,20 @@ public class UIManager : MonoBehaviour
     
     public void SetNumberOfStepsText(int steps)
     {
-        numberOfStepsText.SetText("Execution time: " + steps);
+        numberOfStepsText.SetText("Number of steps: " + steps);
     }
     
     public void SetExecutionTimeText(int time)
     {
         executionTimeText.SetText("Execution time: " + time + "ms");
+    }
+
+    public void RestoreTexts()
+    {
+        algorithmText.SetText("Algorithm: ");
+        pathCostText.SetText("SP cost: ");
+        numberOfStepsText.SetText("Number of steps: ");
+        executionTimeText.SetText("Execution time: ");
     }
     
     // ====================================================================================
@@ -92,18 +100,6 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
     // ====================================================================================
 }

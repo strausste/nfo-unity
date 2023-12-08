@@ -49,8 +49,7 @@ public class DijkstraManager : MonoBehaviour
     // MonoBehaviour methods
     // ====================================================================================
     
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         // ====================================================================================
         // Initialization
@@ -235,6 +234,16 @@ public class DijkstraManager : MonoBehaviour
         Debug.Log("(Dijkstra's) " + "Number of visited cubes: " + visitedCubesCount);
         
         // ====================================================================================
+    }
+    
+    /** Restore the world as it was before the algorithm's execution */
+    private void OnDisable()
+    {
+        // Restore Grid
+        gridManager.RecreateGrid();
+        
+        // Restore UI
+        uIManager.RestoreTexts();
     }
     
     // ====================================================================================
