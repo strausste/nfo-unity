@@ -183,18 +183,20 @@ public class AStarManager : MonoBehaviour
         
         // ====================================================================================
         
-        Debug.Log("(A*) number of steps: " + _numberOfSteps);
+        Debug.Log("(A* " + heuristic + ") Number of steps: " + _numberOfSteps);
 
         int visitedCubesCount = Enumerable.Range(0, _rows)
             .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
             .Count(coord => _isVisited[coord.X, coord.Y]);
             
-        Debug.Log("(A* " + heuristic + "), number of visited cubes: " + visitedCubesCount);
+        Debug.Log("(A* " + heuristic + ") Number of visited cubes: " + visitedCubesCount);
         
         // ====================================================================================
         
         // Reconstruct path
         _path = Path.ReconstructPath(_pred, _sourcePosition, _destinationPosition);
+        
+        Debug.Log("(A* " + heuristic + ") Path cost: " + Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
 
         // ====================================================================================
         

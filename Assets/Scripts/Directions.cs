@@ -49,6 +49,27 @@ public class Directions
         return _numberOfDirections;
     }
 
+    /** Returns the common index of this class' _dx and _dy array given the dx and dy parameters */
+    public static int GetDeltaIndex(int dx, int dy)
+    {
+        if ((dx > 1 || dx < -1) || (dy > 1 || dy < -1))
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+
+        for (int i = 0; i < _numberOfDirections; i++)
+        {
+            // Return the index that mathces _dx with dx and _dy with dy
+            if (_dx[i] == dx && _dy[i] == dy)
+            {
+                return i;
+            }
+        }
+
+        // In case of error return -1
+        return -1;
+    }
+
     /** Returns true iff deltaIndex is associated to an orthogonal movement, false otherwise*/
     public static bool IsIndexOrthogonal(int deltaIndex)
     {

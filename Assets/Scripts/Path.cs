@@ -33,6 +33,30 @@ public class Path
 
         return path;
     }
+
+    public static int ComputePathCost(List<Vector2Int> path, int orthogonalMovementCost, int diagonalMovementCost)
+    {
+        int cost = 0;
+        
+        foreach (var cube in path)
+        {
+            int currentIndex = path.IndexOf(cube);
+            
+            // For all the cubes in path but the last (the destination)
+            if (path.IndexOf(cube) != path.Count - 1)
+            {
+                Vector2Int nextCube = path[currentIndex + 1];
+
+                int dx = cube.x - nextCube.x;
+                int dy = cube.y - nextCube.y;
+                
+                // Add up to cost the correct one based on the direction we're moving to the next cube
+                cost += Directions.IsIndexOrthogonal(Directions.GetDeltaIndex(dx, dy)) ? orthogonalMovementCost : diagonalMovementCost;
+            }
+        }
+
+        return cost;
+    }
     
     // ====================================================================================
 }
