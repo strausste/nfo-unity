@@ -198,6 +198,7 @@ public class DijkstraManager : MonoBehaviour
         
         uIManager.SetAlgorithmText(UIManager.Algorithms.DIJKSTRA);
         uIManager.SetPathCostText(Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        uIManager.SetNumberOfStepsText(_numberOfSteps);
         uIManager.SetExecutionTimeText((int)watch.ElapsedMilliseconds);
         
         // ====================================================================================

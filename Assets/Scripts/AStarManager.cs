@@ -207,6 +207,7 @@ public class AStarManager : MonoBehaviour
         
         uIManager.SetAlgorithmText((UIManager.Algorithms)(heuristic + 1)); // + 1 because there's a 1 offset from Heuristics.HeuristicName and UIManager.algorithm
         uIManager.SetPathCostText(Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        uIManager.SetNumberOfStepsText(_numberOfSteps);
         uIManager.SetExecutionTimeText((int)watch.ElapsedMilliseconds);
         
         // ====================================================================================
