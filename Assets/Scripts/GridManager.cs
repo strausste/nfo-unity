@@ -1,5 +1,8 @@
-
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 
 public class GridManager : MonoBehaviour
 {
@@ -143,6 +146,46 @@ public class GridManager : MonoBehaviour
         // Destination
         DeleteCube(destinationPosition.x, destinationPosition.y);
         CreateCube(destinationPrefab, destinationPosition.x, destinationPosition.y);
+    }
+
+    public void UpdateScenarioAfterPathComputation(List<Vector2Int> path, bool displayVisited, bool[,] isVisited)
+    {
+        // Show in the grid the cubes the algorithm visited
+        if (displayVisited)
+        {
+            for (int x = 0; x < gridSizeX; x++)
+            {
+                for (int y = 0; y < gridSizeY; y++)
+                {
+                    Vector2Int current = new Vector2Int(x, y);
+                    
+                    // Leave obstacles, source and destination visible
+                    if (current == sourcePosition || current == destinationPosition || obstaclesPosition.Contains(current))
+                    {
+                        continue;
+                    }
+                    
+                    if (isVisited[x,y])
+                    {
+                        DeleteCube(x, y);
+                        CreateCube(visitedPrefab, x, y);
+                    }
+                }
+            }
+        }
+
+        // Create path cubes
+        foreach (var cube in path)
+        {
+            // Leave obstacles, source and destination visible
+            if (cube == sourcePosition || cube == destinationPosition || obstaclesPosition.Contains(cube))
+            {
+                continue; 
+            }
+
+            DeleteCube(cube.x, cube.y);
+            CreateCube(GetPathPrefab(), cube.x, cube.y);
+        }
     }
 
     /** Instantiates and stores the desired prefab in the _grid */

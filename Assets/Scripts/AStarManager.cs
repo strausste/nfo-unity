@@ -194,84 +194,25 @@ public class AStarManager : MonoBehaviour
         // ====================================================================================
         
         // Reconstruct path
-
-        _numberOfSteps = 0;
-        
-        _path = new List<Vector2Int>();
-        
-        // Starting from destination
-        Vector2Int current = new Vector2Int(_destinationPosition.x, _destinationPosition.y) ;
-
-        // To source
-        while (!current.Equals(new Vector2Int(_sourcePosition.x, _sourcePosition.y)))
-        {
-            _path.Add(current);
-
-            // Check if current is out of bounds to avoid potential issues
-            if (current.x < 0 || current.x >= _rows || current.y < 0 || current.y >= _columns)
-            {
-                Debug.LogError("Path reconstruction encountered out-of-bounds coordinates.");
-                break;
-            }
-
-            current = _pred[current.x, current.y];
-
-            _numberOfSteps++;
-        }
-
-        // Add the source to the path
-        _path.Add(_sourcePosition);
-
-        // Reverse to get the path from source to destination
-        _path.Reverse();
+        _path = Path.ReconstructPath(_pred, _sourcePosition, _destinationPosition);
 
         // ====================================================================================
         
         
         // ====================================================================================
         
-        // Update scenario:
+        // Update scenario
         
-        // _path.ForEach(t => Debug.Log(t));
-        
-        Debug.Log("(Reconstruct path) number of steps: " + _numberOfSteps);
-
-        // Show in the grid the cubes the algorithm visited
-        if (displayVisited)
+        // Merge isVisited and _neighborsVisited together to visualize them both
+        for (int x = 0; x < _rows; x++)
         {
-            for (int x = 0; x < _rows; x++)
+            for (int y = 0; y < _columns; y++)
             {
-                for (int y = 0; y < _columns; y++)
-                {
-                    current = new Vector2Int(x, y);
-                    
-                    // Leave obstacles, source and destination visible
-                    if (current == _sourcePosition || current == _destinationPosition || _obstaclesPosition.Contains(current))
-                    {
-                        continue;
-                    }
-                    
-                    if (_isVisited[x,y] || _neighborsVisited[x,y])
-                    {
-                        gridManager.DeleteCube(x, y);
-                        gridManager.CreateCube(gridManager.GetVisitedPrefab(), x, y);
-                    }
-                }
+                if (_neighborsVisited[x, y]) _isVisited[x, y] = true;
             }
         }
-
-        // Create path cubes
-        foreach (var cube in _path)
-        {
-            // Leave obstacles, source and destination visible
-            if (cube == _sourcePosition || cube == _destinationPosition || _obstaclesPosition.Contains(cube))
-            {
-                continue; 
-            }
-
-            gridManager.DeleteCube(cube.x, cube.y);
-            gridManager.CreateCube(gridManager.GetPathPrefab(), cube.x, cube.y);
-        }
+        
+        gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, _isVisited);
 
         // ====================================================================================
         
