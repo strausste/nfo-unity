@@ -43,7 +43,7 @@ public class GridManager : MonoBehaviour
     // Class methods
     // ====================================================================================
 
-    // Public property to access the instance
+    // Access the instance
     public static GridManager GetInstance()
     {
         // If the instance doesn't exist, find or create it
@@ -147,6 +147,9 @@ public class GridManager : MonoBehaviour
         // Destination
         DeleteCube(destinationPosition.x, destinationPosition.y);
         CreateCube(destinationPrefab, destinationPosition.x, destinationPosition.y);
+        
+        // Update UI
+        UIManager.GetInstance().SetGridSizeText();
     }
 
     private void DeleteGrid()
@@ -164,9 +167,12 @@ public class GridManager : MonoBehaviour
                 DeleteCube(x, z);
             }
         }
-        
+
         // Set grid to null
         _grid = null;
+        
+        // Update UI
+        UIManager.GetInstance().SetGridSizeText();
     }
 
     public void RecreateGrid()
@@ -246,7 +252,6 @@ public class GridManager : MonoBehaviour
     private void Awake()
     {
         // Ensure there's only one instance, and persist it between scenes
-        // This is useless for the project's purposes, but this is how you implement singleton pattern in Unity
         if (_instance == null)
         {
             _instance = this;

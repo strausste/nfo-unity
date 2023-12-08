@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
         A_STAR_OCTILE
     }
 
+    [SerializeField] private TextMeshProUGUI gridSizeText;
     [SerializeField] private TextMeshProUGUI algorithmText;
     [SerializeField] private TextMeshProUGUI pathCostText;
     [SerializeField] private TextMeshProUGUI numberOfStepsText;
@@ -31,7 +32,41 @@ public class UIManager : MonoBehaviour
     // ====================================================================================
     // Class methods
     // ====================================================================================
+    
+    
+    // Access the instance
+    public static UIManager GetInstance()
+    {
+        // If the instance doesn't exist, find or create it
+        if (_instance == null)
+        {
+            _instance = FindObjectOfType<UIManager>();
 
+            // If no instance exists in the scene, create a new GameObject and add the script
+            if (_instance == null)
+            {
+                GameObject singletonObject = new GameObject(nameof(UIManager));
+                _instance = singletonObject.AddComponent<UIManager>();
+            }
+        }
+
+        return _instance;
+    }
+    
+    public void SetGridSizeText()
+    {
+        var grid = GridManager.GetInstance();
+
+        if (grid)
+        {
+            gridSizeText.SetText("Grid size: " + "(" + grid.GetGridSize().x + "," + grid.GetGridSize().y + ")");
+        }
+        else
+        {
+            gridSizeText.SetText("Grid size: ");
+        }
+    }
+    
     public void SetAlgorithmText(Algorithms algorithm)
     {
         switch (algorithm)
