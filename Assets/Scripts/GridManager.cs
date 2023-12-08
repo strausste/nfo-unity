@@ -210,7 +210,7 @@ public class GridManager : MonoBehaviour
     
     
     // ====================================================================================
-    // MonoBehaviour methods:
+    // MonoBehaviour methods
     // ====================================================================================
 
     private void Awake()

@@ -23,6 +23,7 @@ public class AStarManager : MonoBehaviour
     
     [Header("Scripts")] 
     [SerializeField] private GridManager gridManager;
+    [SerializeField] private UIManager uIManager;
     
     private GameObject[,] _grid;
     
@@ -49,15 +50,16 @@ public class AStarManager : MonoBehaviour
     
     
     // ====================================================================================
-    // MonoBehaviour methods:
+    // MonoBehaviour methods
     // ====================================================================================
     
     // Start is called before the first frame update
     void Start()
     {
         // ====================================================================================
+        // Initialization
+        // ====================================================================================
         
-        // Initialization:
         _grid = gridManager.GetGrid();
 
         _sourcePosition = gridManager.GetSourcePosition();
@@ -76,8 +78,8 @@ public class AStarManager : MonoBehaviour
         _numberOfSteps = 0;
         
         // ====================================================================================
-        
         // A*
+        // ====================================================================================
         
         for (int i = 0; i < _rows; i++)
         {
@@ -183,17 +185,11 @@ public class AStarManager : MonoBehaviour
         
         // ====================================================================================
         
-        Debug.Log("(A* " + heuristic + ") Number of steps: " + _numberOfSteps);
-
-        int visitedCubesCount = Enumerable.Range(0, _rows)
-            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
-            .Count(coord => _isVisited[coord.X, coord.Y]);
-            
-        Debug.Log("(A* " + heuristic + ") Number of visited cubes: " + visitedCubesCount);
         
         // ====================================================================================
-        
         // Reconstruct path
+        // ====================================================================================
+        
         _path = Path.ReconstructPath(_pred, _sourcePosition, _destinationPosition);
         
         Debug.Log("(A* " + heuristic + ") Path cost: " + Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
@@ -202,8 +198,18 @@ public class AStarManager : MonoBehaviour
         
         
         // ====================================================================================
+        // UI
+        // ====================================================================================
         
+        uIManager.SetAlgorithmText((UIManager.Algorithms)(heuristic + 1)); // + 1 because there's a 1 offset from Heuristics.HeuristicName and UIManager.algorithm
+        uIManager.SetPathCostText(Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        
+        // ====================================================================================
+
+
+        // ====================================================================================
         // Update scenario
+        // ====================================================================================
         
         // Merge isVisited and _neighborsVisited together to visualize them both
         for (int x = 0; x < _rows; x++)
@@ -218,6 +224,20 @@ public class AStarManager : MonoBehaviour
 
         // ====================================================================================
         
+        
+        // ====================================================================================
+        // Debug.Log
+        // ====================================================================================
+        
+        Debug.Log("(A* " + heuristic + ") Number of steps: " + _numberOfSteps);
+
+        int visitedCubesCount = Enumerable.Range(0, _rows)
+            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
+            .Count(coord => _isVisited[coord.X, coord.Y]);
+            
+        Debug.Log("(A* " + heuristic + ") Number of visited cubes: " + visitedCubesCount);
+        
+        // ====================================================================================
     }
     
     // ====================================================================================

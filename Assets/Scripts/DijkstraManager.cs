@@ -19,6 +19,7 @@ public class DijkstraManager : MonoBehaviour
     
     [Header("Scripts")] 
     [SerializeField] private GridManager gridManager;
+    [SerializeField] private UIManager uIManager;
     
     private GameObject[,] _grid;
     
@@ -45,15 +46,16 @@ public class DijkstraManager : MonoBehaviour
     
     
     // ====================================================================================
-    // MonoBehaviour methods:
+    // MonoBehaviour methods
     // ====================================================================================
     
     // Start is called before the first frame update
     void Start()
     {
         // ====================================================================================
+        // Initialization
+        // ====================================================================================
         
-        // Initialization:
         _grid = gridManager.GetGrid();
 
         _sourcePosition = gridManager.GetSourcePosition();
@@ -73,7 +75,10 @@ public class DijkstraManager : MonoBehaviour
         
         // ====================================================================================
         
-        // Dijkstra's
+        
+        // ====================================================================================
+        // Dijkstra
+        // ====================================================================================
         
         for (int i = 0; i < _rows; i++)
         {
@@ -171,27 +176,29 @@ public class DijkstraManager : MonoBehaviour
         
         // ====================================================================================
         
-        Debug.Log("(Dijkstra's) Number of steps: " + _numberOfSteps);
-        
-        int visitedCubesCount = Enumerable.Range(0, _rows)
-            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
-            .Count(coord => _isVisited[coord.X, coord.Y]);
-            
-        Debug.Log("(Dijkstra's) " + "Number of visited cubes: " + visitedCubesCount);
         
         // ====================================================================================
-        
         // Reconstruct path
+        // ====================================================================================
+        
         _path = Path.ReconstructPath(_pred, _sourcePosition, _destinationPosition);
         
-        Debug.Log("(Dijkstra's) Path cost: " + Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
-
         // ====================================================================================
         
         
         // ====================================================================================
+        // UI
+        // ====================================================================================
         
+        uIManager.SetAlgorithmText(UIManager.Algorithms.DIJKSTRA);
+        uIManager.SetPathCostText(Path.ComputePathCost(_path, orthogonalCost, diagonalCost));
+        
+        // ====================================================================================
+        
+        
+        // ====================================================================================
         // Update scenario
+        // ====================================================================================
         
         // Merge isVisited and _neighborsVisited together to visualize them both
         for (int x = 0; x < _rows; x++)
@@ -205,7 +212,21 @@ public class DijkstraManager : MonoBehaviour
         gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, _isVisited);
 
         // ====================================================================================
-
+        
+        
+        // ====================================================================================
+        // Debug.Log
+        // ====================================================================================
+        
+        Debug.Log("(Dijkstra's) Number of steps: " + _numberOfSteps);
+        
+        int visitedCubesCount = Enumerable.Range(0, _rows)
+            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
+            .Count(coord => _isVisited[coord.X, coord.Y]);
+            
+        Debug.Log("(Dijkstra's) " + "Number of visited cubes: " + visitedCubesCount);
+        
+        // ====================================================================================
     }
     
     // ====================================================================================
