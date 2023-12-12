@@ -27,9 +27,7 @@ public class DijkstraManager : MonoBehaviour
     private int _columns;
     
     private int[,] _distances;
-    private bool[,] _isVisited; // used by algorithm
-
-    private bool[,] _neighborsVisited; // used for visualization only
+    private bool[,] _isVisited;
 
     private Vector2Int[,] _pred; // matrix of Vector2Int coordinates
 
@@ -68,8 +66,7 @@ public class DijkstraManager : MonoBehaviour
         _distances = new int[_rows, _columns];
         _isVisited = new bool[_rows, _columns];
         _pred = new Vector2Int[_rows, _columns];
-
-        _neighborsVisited = new bool[_rows, _columns];
+        
         _numberOfSteps = 0;
         
         // ====================================================================================
@@ -151,29 +148,29 @@ public class DijkstraManager : MonoBehaviour
                 // Check if the neighbor is inside the grid
                 if ((neighborX >= 0 && neighborX < _rows) && (neighborY >= 0 && neighborY < _columns))
                 {
-                    // Calculate the distance (based on the neighbor's type (orthogonal or diagonal)
+                    // Compute the distance (based on the neighbor's type (orthogonal or diagonal)
                     int movementCost = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
                     int distance = _distances[x,y] + movementCost;
-                    
+                
                     // Check optimality condition
                     if (distance < _distances[neighborX, neighborY])
                     {
                         // Update distance if this is shorter
                         _distances[neighborX, neighborY] = distance;
-                        
+                    
                         // Update predecessor
                         _pred[neighborX, neighborY] = currentPosition;
-                        
+                    
                         // Add neighbor to the priority queue
                         priorityQueue.Enqueue((neighborX, neighborY));
                     }
-                    
+                
                     // (For visualization purpose only! Not part of Dijkstra's algorithm)
-                    _neighborsVisited[neighborX, neighborY] = true;
+                    _isVisited[neighborX, neighborY] = true;
                 }
-
                 _numberOfSteps++;
             }
+            _numberOfSteps++;
         }
         
         // ====================================================================================
@@ -206,15 +203,6 @@ public class DijkstraManager : MonoBehaviour
         // ====================================================================================
         // Update scenario
         // ====================================================================================
-        
-        // Merge isVisited and _neighborsVisited together to visualize them both
-        for (int x = 0; x < _rows; x++)
-        {
-            for (int y = 0; y < _columns; y++)
-            {
-                if (_neighborsVisited[x, y]) _isVisited[x, y] = true;
-            }
-        }
         
         gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, _isVisited);
 

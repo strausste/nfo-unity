@@ -798,7 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8a64a248b2d3c34d89d3a5a4c4b8fc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heuristic: 1
+  heuristic: 3
   orthogonalCost: 10
   diagonalCost: 14
   displayVisited: 1
@@ -1244,7 +1244,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1912865269
 Transform:
   m_ObjectHideFlags: 0
