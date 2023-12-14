@@ -184,7 +184,7 @@ public class GridManager : MonoBehaviour
         CreateGrid();
     }
     
-    public void UpdateScenarioAfterPathComputation(List<Vector2Int> path, bool displayVisited, bool[,] isVisited)
+    public void UpdateScenarioAfterPathComputation(List<Vector2Int> path, bool displayVisited, HashSet<(int, int)> permanentCubes)
     {
         // Show in the grid the cubes the algorithm visited
         if (displayVisited)
@@ -201,7 +201,7 @@ public class GridManager : MonoBehaviour
                         continue;
                     }
                     
-                    if (isVisited[x,y])
+                    if (permanentCubes.Contains((x,y)))
                     {
                         DeleteCube(x, y);
                         CreateCube(visitedPrefab, x, y);

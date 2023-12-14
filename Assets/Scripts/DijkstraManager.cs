@@ -27,7 +27,6 @@ public class DijkstraManager : MonoBehaviour
     private int _columns;
     
     private int[,] _distances;
-    private bool[,] _isVisited;
 
     private Vector2Int[,] _pred; // matrix of Vector2Int coordinates
 
@@ -64,7 +63,6 @@ public class DijkstraManager : MonoBehaviour
         _columns = gridManager.GetGridSize().y;
 
         _distances = new int[_rows, _columns];
-        _isVisited = new bool[_rows, _columns];
         _pred = new Vector2Int[_rows, _columns];
         
         _numberOfSteps = 0;
@@ -84,10 +82,7 @@ public class DijkstraManager : MonoBehaviour
             for (int j = 0; j < _columns; j++)
             {
                 // Instead of Infinity, we give integer's max value
-                _distances[i, j] = int.MaxValue; 
-                
-                // All nodes are temporary before execution
-                _isVisited[i, j] = false; 
+                _distances[i, j] = int.MaxValue;
             }
         }
         
@@ -97,19 +92,26 @@ public class DijkstraManager : MonoBehaviour
         // Predecessor of source is source itself
         _pred[_sourcePosition.x, _sourcePosition.y] = _sourcePosition;
         
-        // Priority queue to store nodes (cubes)'s coordinates based on their distances
-        PriorityQueue<(int, int)> priorityQueue = new PriorityQueue<(int, int)>((a, b) =>
+        // Priority queue to store nodes (cubes)'s coordinates based on their distances [OPEN LIST]
+        PriorityQueue<(int, int)> temporaryCubes = new PriorityQueue<(int, int)>((a, b) =>
             _distances[a.Item1, a.Item2].CompareTo(_distances[b.Item1, b.Item2])); // C# Tuples, and C#'s default CompareTo()
-        
+    
+        // [CLOSED LIST]
+        HashSet<(int, int)> permanentCubes = new HashSet<(int, int)>(); 
+
         // Add source to the priority queue
-        priorityQueue.Enqueue((_sourcePosition.x, _sourcePosition.y));
-        
-        
+        temporaryCubes.Enqueue((_sourcePosition.x, _sourcePosition.y));
+
         // While there are elements in the priority queue
-        while (priorityQueue.Count() > 0)
+        while (temporaryCubes.Count() > 0)
         {
             // Extract the cube with the smallest distance
-            (int x, int y) = priorityQueue.Dequeue();
+            (int x, int y) = temporaryCubes.Dequeue();
+            
+            if (permanentCubes.Contains((x, y))) continue; 
+            
+            // Make this cube permanent:
+            permanentCubes.Add((x, y));
 
             Vector2Int currentPosition = new Vector2Int(x, y);
             
@@ -118,7 +120,8 @@ public class DijkstraManager : MonoBehaviour
             {
                 break;
             }
-
+            
+            // ===================================
             // Check if this is an obstacle cube
             bool isObstacle = false;
             
@@ -135,10 +138,8 @@ public class DijkstraManager : MonoBehaviour
             {
                 continue;
             }
-            
-            // Mark the cube as visited
-            _isVisited[x, y] = true;
-            
+            // ===================================
+
             // Check neighbors in each direction (similar to checking leaving arcs)
             for (int i = 0; i < Directions.GetNumberOfDirections(); i++)
             {
@@ -162,13 +163,10 @@ public class DijkstraManager : MonoBehaviour
                         _pred[neighborX, neighborY] = currentPosition;
                     
                         // Add neighbor to the priority queue
-                        priorityQueue.Enqueue((neighborX, neighborY));
+                        temporaryCubes.Enqueue((neighborX, neighborY));
                     }
-                
-                    // (For visualization purpose only! Not part of Dijkstra's algorithm)
-                    _isVisited[neighborX, neighborY] = true;
                 }
-                _numberOfSteps++;
+                // _numberOfSteps++;
             }
             _numberOfSteps++;
         }
@@ -204,7 +202,7 @@ public class DijkstraManager : MonoBehaviour
         // Update scenario
         // ====================================================================================
         
-        gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, _isVisited);
+        gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, permanentCubes);
 
         // ====================================================================================
         
@@ -215,11 +213,7 @@ public class DijkstraManager : MonoBehaviour
         
         Debug.Log("(Dijkstra's) Number of steps: " + _numberOfSteps);
         
-        int visitedCubesCount = Enumerable.Range(0, _rows)
-            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
-            .Count(coord => _isVisited[coord.X, coord.Y]);
-            
-        Debug.Log("(Dijkstra's) " + "Number of visited cubes: " + visitedCubesCount);
+        Debug.Log("(Dijkstra's) " + "Number of visited cubes: " + permanentCubes.Count());
         
         // ====================================================================================
     }

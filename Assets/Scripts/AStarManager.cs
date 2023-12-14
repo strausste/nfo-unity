@@ -31,10 +31,7 @@ public class AStarManager : MonoBehaviour
     private int _columns;
     
     private int[,] _distances;
-    private bool[,] _isVisited; // used by algorithm
-
-    private bool[,] _neighborsVisited; // used for visualization only
-
+    
     private Vector2Int[,] _pred; // matrix of Vector2Int coordinates
 
     private Vector2Int _sourcePosition;
@@ -70,7 +67,6 @@ public class AStarManager : MonoBehaviour
         _columns = gridManager.GetGridSize().y;
 
         _distances = new int[_rows, _columns];
-        _isVisited = new bool[_rows, _columns];
         _pred = new Vector2Int[_rows, _columns];
         
         _numberOfSteps = 0;
@@ -87,10 +83,7 @@ public class AStarManager : MonoBehaviour
             for (int j = 0; j < _columns; j++)
             {
                 // Instead of Infinity, we give integer's max value
-                _distances[i, j] = int.MaxValue; 
-                
-                // All nodes are temporary before execution
-                _isVisited[i, j] = false; 
+                _distances[i, j] = int.MaxValue;
             }
         }
         
@@ -100,24 +93,35 @@ public class AStarManager : MonoBehaviour
         // Predecessor of source is source itself
         _pred[_sourcePosition.x, _sourcePosition.y] = _sourcePosition;
         
-        // Priority queue to store nodes (cubes)'s coordinates based on their distances
-        PriorityQueue<(int, int)> priorityQueue = new PriorityQueue<(int, int)>((a, b) =>
+        // Priority queue to store nodes (cubes)'s coordinates based on their distances [OPEN LIST]
+        PriorityQueue<(int, int)> temporaryCubes = new PriorityQueue<(int, int)>((a, b) =>
         {
-            int costA = _distances[a.Item1, a.Item2] + Heuristics.CalculateHeuristic(heuristic, new Vector2Int(a.Item1, a.Item2), _destinationPosition);
-            int costB = _distances[b.Item1, b.Item2] + Heuristics.CalculateHeuristic(heuristic, new Vector2Int(b.Item1, b.Item2), _destinationPosition);
-            
+            var (x1, y1) = a;
+            var (x2, y2) = b;
+
+            int costA = _distances[x1, y1] + Heuristics.CalculateHeuristic(heuristic, new Vector2Int(x1, y1), _destinationPosition);
+            int costB = _distances[x2, y2] + Heuristics.CalculateHeuristic(heuristic, new Vector2Int(x2, y2), _destinationPosition);
+
             return costA.CompareTo(costB);
         });
         
+        // [CLOSED LIST]
+        HashSet<(int, int)> permanentCubes = new HashSet<(int, int)>(); 
+        
         // Add source to the priority queue
-        priorityQueue.Enqueue((_sourcePosition.x, _sourcePosition.y));
+        temporaryCubes.Enqueue((_sourcePosition.x, _sourcePosition.y));
         
         
         // While there are elements in the priority queue
-        while (priorityQueue.Count() > 0)
+        while (temporaryCubes.Count() > 0)
         {
             // Extract the cube with the smallest distance
-            (int x, int y) = priorityQueue.Dequeue();
+            (int x, int y) = temporaryCubes.Dequeue();
+
+            if (permanentCubes.Contains((x, y))) continue; 
+            
+            // Make this cube permanent:
+            permanentCubes.Add((x, y));
 
             Vector2Int currentPosition = new Vector2Int(x, y);
             
@@ -143,23 +147,20 @@ public class AStarManager : MonoBehaviour
             {
                 continue;
             }
-            
-            // Mark the cube as visited
-            _isVisited[x, y] = true;
-            
+
             // Check neighbors in each direction (similar to checking leaving arcs)
             for (int i = 0; i < Directions.GetNumberOfDirections(); i++)
             {
                 int neighborX = x + Directions.GetDx()[i];
                 int neighborY = y + Directions.GetDy()[i];
-                
+
                 // Check if the neighbor is inside the grid
                 if ((neighborX >= 0 && neighborX < _rows) && (neighborY >= 0 && neighborY < _columns))
                 {
                     // Compute the distance (based on the neighbor's type (orthogonal or diagonal)
                     int movementCost = Directions.IsIndexOrthogonal(i) ? orthogonalCost : diagonalCost;
                     int distance = _distances[x,y] + movementCost;
-                    
+       
                     // We add up heuristic to the distance
                     distance += Heuristics.CalculateHeuristic(heuristic, new Vector2Int(neighborX, neighborY), _destinationPosition);
 
@@ -173,11 +174,10 @@ public class AStarManager : MonoBehaviour
                         _pred[neighborX, neighborY] = currentPosition;
                         
                         // Add neighbor to the priority queue
-                        priorityQueue.Enqueue((neighborX, neighborY));
+                        temporaryCubes.Enqueue((neighborX, neighborY));
                     }
-                    _isVisited[neighborX, neighborY] = true;
                 }
-                _numberOfSteps++;
+                // _numberOfSteps++;
             }
             _numberOfSteps++;
         }
@@ -213,7 +213,7 @@ public class AStarManager : MonoBehaviour
         // Update scenario
         // ====================================================================================
 
-        gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, _isVisited);
+        gridManager.UpdateScenarioAfterPathComputation(_path, displayVisited, permanentCubes);
 
         // ====================================================================================
         
@@ -224,11 +224,7 @@ public class AStarManager : MonoBehaviour
         
         Debug.Log("(A* " + heuristic + ") Number of steps: " + _numberOfSteps);
 
-        int visitedCubesCount = Enumerable.Range(0, _rows)
-            .SelectMany(x => Enumerable.Range(0, _columns).Select(y => new { X = x, Y = y }))
-            .Count(coord => _isVisited[coord.X, coord.Y]);
-            
-        Debug.Log("(A* " + heuristic + ") Number of visited cubes: " + visitedCubesCount);
+        Debug.Log("(Dijkstra's) " + "Number of visited cubes: " + permanentCubes.Count());
         
         // ====================================================================================
     }
