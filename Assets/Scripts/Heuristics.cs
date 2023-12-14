@@ -18,6 +18,10 @@ public class Heuristics
         OctileDistance
     }
     
+    // Used for Octile Distance (double check AStarManager.cs has the same costs when using that heuristic)
+    private static int OrthogonalMovementCost = 10;
+    private static int DiagonalMovementCost = 14;
+    
     // ====================================================================================
     
     
@@ -51,7 +55,7 @@ public class Heuristics
     
     public static int ManhattanDistance(Vector2Int first, Vector2Int second)
     {
-        return Math.Abs(first.x - second.x) + Math.Abs(first.y - second.y);
+            return Math.Abs(first.x - second.x) + Math.Abs(first.y - second.y);
     }
 
     public static int ChebyshevDistance(Vector2Int first, Vector2Int second)
@@ -67,7 +71,7 @@ public class Heuristics
         int dx = Mathf.Abs(first.x - second.x);
         int dy = Mathf.Abs(first.y - second.y);
 
-        return Math.Max(dx, dy) + (int)((Mathf.Sqrt(2) - 1) * Mathf.Min(dx, dy));
+        return Math.Max(dx, dy) + (DiagonalMovementCost - OrthogonalMovementCost) * Math.Min(dx, dy);
     }
 
     // ====================================================================================

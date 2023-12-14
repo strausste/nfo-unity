@@ -11,8 +11,8 @@ public class DijkstraManager : MonoBehaviour
     // ====================================================================================
 
     [Header("Costs")] 
-    [SerializeField] private int orthogonalCost = 1;
-    [SerializeField] private int diagonalCost = 1;
+    [SerializeField] private int orthogonalCost = 10;
+    [SerializeField] private int diagonalCost = 14;
 
     [Header("Booleans")] 
     [SerializeField] private bool displayVisited;
