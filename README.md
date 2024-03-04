@@ -19,7 +19,7 @@ Play the game and, in the Editor, manually set the DijkstraManager game object t
 
 ## A* algorithm
 
-Select the AStarManager game object and choose the heurist function from the Inspector tab:
+Select the AStarManager game object and choose the heuristic function from the Inspector tab:
 
  > Euclidean Distance \
  > Manhattan Distance \
@@ -30,5 +30,5 @@ Set costs from the Inspector tab:
  > Orthogonal Cost \
  > Diagonal Cost 
 
-Play the game and, in the Editor, manually set the DijkstraManager game object to active
+Play the game and, in the Editor, manually set the AStarManager game object to active
 
